@@ -8,6 +8,8 @@ WHERE emp_no IN (
     FROM dept_manager
 )
 LIMIT 10;
+-- EXAMAMPLE --
+
 
 # 1.-
 SELECT *
