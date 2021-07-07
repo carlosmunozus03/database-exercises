@@ -1,5 +1,4 @@
-USE
-codeup_test_db;
+USE codeup_test_db;
 
 SELECT 'All albums in your table' AS 'Query One';
 

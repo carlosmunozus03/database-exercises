@@ -1,5 +1,4 @@
-USE
-codeup_test_db;
+USE codeup_test_db;
 
 SELECT 'Pink Floyd Albums' AS 'Query One';
 
@@ -44,4 +43,3 @@ SELECT 'All Rock Albums' AS 'Query Six';
 SELECT *
 FROM albums
 WHERE genre = 'Rock';
-

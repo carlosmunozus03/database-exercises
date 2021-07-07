@@ -44,3 +44,9 @@ USE employees;
 DROP INDEX salary_index ON salaries;
 
 USE codeup_test_db;
+
+ALTER TABLE albums
+    ADD UNIQUE unique_artist_and_name (artist, name);
+
+ALTER TABLE albums
+    DROP INDEX unique_artist_and_name;

@@ -2,18 +2,20 @@ USE employees;
 
 # Show each department along with the name of the current manager for that department
 
-SELECT d.dept_name AS 'Department Name',
+SELECT d.dept_name                            AS 'Department Name',
        CONCAT(e.first_name, ' ', e.last_name) AS 'Depatment Manager'
-FROM employees e JOIN dept_manager dm ON e.emp_no = dm.emp_no
-                 JOIN departments d ON dm.dept_no = d.dept_no
+FROM employees e
+         JOIN dept_manager dm ON e.emp_no = dm.emp_no
+         JOIN departments d ON dm.dept_no = d.dept_no
 WHERE dm.to_date LIKE '9%';
 
 # Find the name of all departments currently managed by women
 
-SELECT d.dept_name AS 'Department Name',
+SELECT d.dept_name                            AS 'Department Name',
        CONCAT(e.first_name, ' ', e.last_name) AS 'Depatment Manager'
-FROM employees e JOIN dept_manager dm ON e.emp_no = dm.emp_no
-                 JOIN departments d ON dm.dept_no = d.dept_no
+FROM employees e
+         JOIN dept_manager dm ON e.emp_no = dm.emp_no
+         JOIN departments d ON dm.dept_no = d.dept_no
 WHERE dm.to_date LIKE '9%'
   AND e.gender = 'F';
 
@@ -22,8 +24,9 @@ WHERE dm.to_date LIKE '9%'
 # the tricky part here is realizing you have to include both de.to_date and t.to_date in your WHERE clause
 
 SELECT title, COUNT(title) AS Total
-FROM titles t JOIN dept_emp de
-                   ON t.emp_no = de.emp_no
+FROM titles t
+         JOIN dept_emp de
+              ON t.emp_no = de.emp_no
 WHERE de.dept_no = 'd009'
   AND de.to_date LIKE '9%'
   AND t.to_date LIKE '9%'
@@ -39,9 +42,9 @@ GROUP BY title;
 
 # So I start out with the basic join chain, showing the columns I need
 # First version
-SELECT dept_name AS 'Department Name',
+SELECT dept_name                          AS 'Department Name',
        CONCAT(first_name, ' ', last_name) AS 'Department Manager',
-       salary AS Salary
+       salary                             AS Salary
 FROM departments d
          JOIN dept_manager dm ON d.dept_no = dm.dept_no
          JOIN employees e ON dm.emp_no = e.emp_no
@@ -53,12 +56,13 @@ FROM departments d
 # so I add a WHERE clause restricting the results to current salaries and managers
 # for good measure I add an ORDER BY DESC even though it wasn't strictly required
 
-SELECT dept_name AS 'Department Name',
+SELECT dept_name                          AS 'Department Name',
        CONCAT(first_name, ' ', last_name) AS 'Department Manager',
-       salary AS Salary FROM departments d
-                                 JOIN dept_manager dm ON d.dept_no = dm.dept_no
-                                 JOIN employees e ON dm.emp_no = e.emp_no
-                                 JOIN salaries s ON e.emp_no = s.emp_no
+       salary                             AS Salary
+FROM departments d
+         JOIN dept_manager dm ON d.dept_no = dm.dept_no
+         JOIN employees e ON dm.emp_no = e.emp_no
+         JOIN salaries s ON e.emp_no = s.emp_no
 WHERE s.to_date = '9999-01-01'
   AND dm.to_date = '9999-01-01'
 ORDER BY Salary DESC;
@@ -87,7 +91,7 @@ ORDER BY Salary DESC;
 
 # armed with this knowledge I can set up my first join chain
 SELECT CONCAT(e.last_name, ' ', e.first_name) AS employee,
-       d.dept_name AS Department
+       d.dept_name                            AS Department
 FROM employees e
          JOIN dept_emp de ON e.emp_no = de.emp_no
          JOIN departments d on d.dept_no = de.dept_no
@@ -106,8 +110,8 @@ LIMIT 20;
 # to test this, I'm going to give the manager's employee number as output
 
 SELECT CONCAT(e.last_name, ' ', e.first_name) AS employee,
-       d.dept_name AS Department,
-       dm.emp_no AS 'Manager Employee Number'
+       d.dept_name                            AS Department,
+       dm.emp_no                              AS 'Manager Employee Number'
 FROM employees e
          JOIN dept_emp de ON e.emp_no = de.emp_no
          JOIN departments d on d.dept_no = de.dept_no
@@ -125,8 +129,8 @@ LIMIT 20;
 # so we create a new alias, e2
 # we delete the employee number from our output and we try the new query
 
-SELECT CONCAT(e.last_name, ' ', e.first_name) AS employee,
-       dept_name AS Department,
+SELECT CONCAT(e.last_name, ' ', e.first_name)   AS employee,
+       dept_name                                AS Department,
        CONCAT(e2.last_name, ' ', e2.first_name) AS Manager
 FROM employees e
          JOIN dept_emp de ON e.emp_no = de.emp_no
@@ -140,29 +144,31 @@ FROM employees e
 # I get duplicate results when I only limit to current employees,
 # ... I investigate by using a query to one employee last name
 
-SELECT CONCAT(e.last_name, ' ', e.first_name) AS employee,
-       dept_name AS Department,
+SELECT CONCAT(e.last_name, ' ', e.first_name)   AS employee,
+       dept_name                                AS Department,
        CONCAT(e2.last_name, ' ', e2.first_name) AS Manager
 FROM employees e
          JOIN dept_emp de ON e.emp_no = de.emp_no
          JOIN departments d ON de.dept_no = d.dept_no
          JOIN dept_manager dm ON d.dept_no = dm.dept_no
          JOIN employees e2 ON e2.emp_no = dm.emp_no
-WHERE de.to_date LIKE '9%' AND e.last_name = 'Sichman';
+WHERE de.to_date LIKE '9%'
+  AND e.last_name = 'Sichman';
 
 # Ahhhh, now I see. Yes, the server is querying for the
 # name of the manager of that department ... but the
 # dept_manager table contains every person who has ever managed that department
 # I need to limit my results to just the current person who manages the department
 
-SELECT CONCAT(e.last_name, ' ', e.first_name) AS employee,
-       dept_name AS Department,
+SELECT CONCAT(e.last_name, ' ', e.first_name)   AS employee,
+       dept_name                                AS Department,
        CONCAT(e2.last_name, ' ', e2.first_name) AS Manager
 FROM employees e
          JOIN dept_emp de ON e.emp_no = de.emp_no
          JOIN departments d ON de.dept_no = d.dept_no
          JOIN dept_manager dm ON d.dept_no = dm.dept_no
          JOIN employees e2 ON e2.emp_no = dm.emp_no
-WHERE de.to_date LIKE '9%' AND dm.to_date LIKE '9%';
+WHERE de.to_date LIKE '9%'
+  AND dm.to_date LIKE '9%';
 
 # And I see the longed-for confirmation: 240124 rows in set (0.85 sec)
