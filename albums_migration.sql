@@ -12,3 +12,5 @@ CREATE TABLE albums
     genre        VARCHAR(50),
     PRIMARY KEY (id)
 );
+
+# addad database
